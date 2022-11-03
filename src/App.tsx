@@ -18,7 +18,7 @@ function App() {
 
   return (
     <main className="w-full bg-black h-[100vh] text-white flex flex-col items-start gap-2">
-      <p>{state.value}</p>
+      <p>{`State: ${state.value}`}</p>
       <button onClick={() => send("START_GAME")}>START_GAME</button>
       <button onClick={() => send("END_TEST_CONTROLS")}>
         END_TEST_CONTROLS
