@@ -7,81 +7,53 @@ import {
   faMoon,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useState } from "react";
-import { useBeatLoop } from "./useBeatLoop";
+import React from "react";
 import { useDarkMode } from "./useDarkMode";
-enum States {
-  Landing,
-  TestingControls,
-  WarmUp,
-  InGame,
-  Results,
-}
+import { useGameState } from "./useGameState";
+
 const Game = () => {
-  const { startLoop, stopLoop } = useBeatLoop();
-  const [gameState, setGameState] = useState<States>(States.Landing);
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    switch (gameState) {
-      case States.TestingControls:
-        document.documentElement.addEventListener("keydown", (event) => {});
-
-        break;
-
-      default:
-        break;
-    }
-  }, [gameState]);
-  const tap = () => {
-    setCount((lastCount) => lastCount + 1);
-  };
-  const start = () => {
-    setCount(0);
-    setGameState(States.TestingControls);
-    startLoop();
-  };
-
-  switch (gameState) {
-    case States.Landing:
-      return (
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="text-8xl">Got Rhythm?</h1>
-          <audio src="/beat.wav" loop></audio>
-          <button onClick={start}>
-            <FontAwesomeIcon size="2x" icon={faPlay} />
-          </button>
+  const { startGame, count, resultsDisplay } = useGameState();
+  if (count === 123123) {
+    return (
+      <>
+        <h1 className="text-8xl">Got Rhythm?</h1>
+        <audio src="/beat.wav" loop></audio>
+        <button onClick={startGame}>
+          <FontAwesomeIcon size="2x" icon={faPlay} />
+        </button>
+      </>
+    );
+  } else if (count < -12) {
+    return (
+      <>
+        <p>tap along to the beat</p>
+        <div className="flex flex-row gap-3">
+          <FontAwesomeIcon size="lg" icon={faComputerMouse} />
+          <FontAwesomeIcon size="lg" icon={faKeyboard} />
         </div>
-      );
-      break;
-    case States.TestingControls:
-      return (
-        <div className="flex flex-col items-center gap-2">
-          {count < 8 ? (
-            <>
-              <p>tap along to the beat</p>
-              <div className="flex flex-row gap-3">
-                <FontAwesomeIcon size="lg" icon={faComputerMouse} />
-                <FontAwesomeIcon size="lg" icon={faKeyboard} />
-              </div>
-            </>
-          ) : (
-            <div>{count}</div>
-          )}
-        </div>
-      );
-    case States.WarmUp:
-
-    case States.InGame:
-    case States.Results:
-    default:
-      break;
+      </>
+    );
+  } else if (count < -6) {
+    return <div>good, now try it on your own</div>;
+  } else if (count < 0) {
+    return <div>the beat will fade out in... {Math.abs(count)}</div>;
+  } else if (count < 20) {
+    return <div>Gaming</div>;
+  } else {
+    return (
+      <>
+        <div>Results</div>
+        {resultsDisplay !== undefined ? (
+          <>
+            <p>Score {resultsDisplay.score}</p>
+            {resultsDisplay.diffs.map((num) => (
+              <p>{num}</p>
+            ))}
+          </>
+        ) : null}
+      </>
+    );
   }
-
-  return (
-    <>
-      <p>testse</p>
-    </>
-  );
 };
 
 function App() {
@@ -93,17 +65,13 @@ function App() {
       className="mt-5 flex w-full flex-col items-center gap-2"
     >
       <menu className="mr-5 self-end">
-        {darkMode ? (
-          <button onClick={setLightMode}>
-            <FontAwesomeIcon icon={faSun} />
-          </button>
-        ) : (
-          <button onClick={setDarkMode}>
-            <FontAwesomeIcon icon={faMoon} />
-          </button>
-        )}
+        <button onClick={darkMode ? setLightMode : setDarkMode}>
+          <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
+        </button>
       </menu>
-      <Game />
+      <div className="flex flex-col items-center gap-2">
+        <Game />
+      </div>
     </main>
   );
 }
