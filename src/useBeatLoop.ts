@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-
+const copyArrayBuffer = (input: ArrayBuffer) => {
+  let output = new ArrayBuffer(input.byteLength);
+  new Uint8Array(output).set(new Uint8Array(input));
+  return output;
+};
 export const useBeatLoop = () => {
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
@@ -37,7 +41,7 @@ export const useBeatLoop = () => {
     // all audio things set, then go ahead and start
     if (audioData.current && audioContext.current && gain.current) {
       audioContext.current
-        .decodeAudioData(audioData.current)
+        .decodeAudioData(copyArrayBuffer(audioData.current))
         .then((buffer) => {
           if (audioData.current && audioContext.current && gain.current) {
             const source = audioContext.current.createBufferSource();
@@ -50,7 +54,7 @@ export const useBeatLoop = () => {
             source.loop = true;
             source.start();
             gain.current.gain.linearRampToValueAtTime(
-              1,
+              0.5,
               audioContext.current.currentTime + 2
             );
             audioSource.current = source;

@@ -1,10 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useBeatLoop } from "./useBeatLoop";
-const results: number[] = [];
+let results: number[] = [];
+type Result = {
+  points: number;
+  isEarly: boolean;
+};
 export type ResultsDisplay = {
-  diffs: number[];
+  diffs: Result[];
   score: number;
 };
+
+export const coolEvent = new CustomEvent("coolEvent");
+
 export const useGameState = () => {
   const { startLoop, stopLoop, error, loading, playing } = useBeatLoop();
   const [count, setCount] = useState(123123);
@@ -14,6 +21,7 @@ export const useGameState = () => {
     if (event.type === "keydown" && (event as KeyboardEvent).key !== " ") {
       return;
     }
+    if (results.length !== 0) document.dispatchEvent(coolEvent);
     results.push(now);
     setCount((oldCount) => oldCount + 1);
   }, []);
@@ -35,30 +43,33 @@ export const useGameState = () => {
   }, []);
 
   const restartGame = useCallback(() => {
-    setCount(-12);
+    results = [];
+    setCount(-6);
     startLoop();
     bindListeners();
   }, []);
 
   useEffect(() => {
-    console.log(count);
     if (count === 0) {
       stopLoop();
     } else if (count >= 20) {
       unbindListeners();
       // calculate last 20 results
-      console.log(results.length);
       const points = results.slice(-20);
       const startingPoint = results[results.length - 21];
-      console.log("points", points);
-      console.log("start: ", startingPoint);
+
       const diffs = points.map((value, index) => {
-        return value - (startingPoint + 500 * (index + 1));
+        const expected = startingPoint + 500 * (index + 1);
+        const isEarly = expected > value;
+        const exactDifference = Math.abs(value - expected);
+        let a = Math.max(0, 250 - exactDifference);
+        const points = Math.floor(50 * (a / 250));
+        return { points, isEarly };
       });
-      const score = diffs.reduce((accum, value) => accum + Math.abs(value), 0);
+
       setResultsDisplay({
         diffs: diffs,
-        score: score,
+        score: diffs.reduce((accum, current) => accum + current.points, 0),
       });
     }
   }, [count]);
