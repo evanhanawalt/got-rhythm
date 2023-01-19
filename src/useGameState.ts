@@ -55,17 +55,22 @@ export const useGameState = () => {
     } else if (count >= 20) {
       unbindListeners();
       // calculate last 20 results
-      const points = results.slice(-20);
-      const startingPoint = results[results.length - 21];
-
-      const diffs = points.map((value, index) => {
-        const expected = startingPoint + 500 * (index + 1);
-        const isEarly = expected > value;
-        const exactDifference = Math.abs(value - expected);
-        let a = Math.max(0, 250 - exactDifference);
-        const points = Math.floor(50 * (a / 250));
-        return { points, isEarly };
-      });
+      const a = results.slice(-21);
+      const diffs = a
+        .map((value, index, arr) => {
+          if (index === 0) {
+            return { points: 0, isEarly: false };
+          } else {
+            const timeSinceLast = value - arr[index - 1];
+            const offsetFromExpected = 500 - timeSinceLast;
+            const isEarly = offsetFromExpected < 0;
+            const exactDifference = Math.abs(offsetFromExpected);
+            const gatedValue = Math.max(0, 200 - exactDifference);
+            const points = Math.floor(50 * (gatedValue / 200));
+            return { points, isEarly };
+          }
+        })
+        .slice(1); // remove starting point from results
 
       setResultsDisplay({
         diffs: diffs,

@@ -6,8 +6,18 @@ import {
   faKeyboard,
   faMoon,
   faSun,
+  faVolumeHigh,
+  faVolumeXmark,
+  faHeadphones,
+  faMicrophone,
+  faRecordVinyl,
+  faMusic,
+  faGuitar,
+  faDrum,
+  faMicrophoneLinesSlash,
+  faCirclePlay,
 } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDarkMode } from "./useDarkMode";
 import { useGameState } from "./useGameState";
 import ResultsChart from "./ResultsChart";
@@ -19,9 +29,14 @@ const Game = () => {
     return (
       <>
         <h1 className="nowrap text-4xl md:text-8xl">Got Rhythm?</h1>
-        <audio src="/beat.wav" loop></audio>
+
+        <div className="flex flex-row items-center p-5">
+          <p className="text-lg">turn up your volume and press play</p>
+          <FontAwesomeIcon className="ml-3" icon={faVolumeHigh} />
+        </div>
+
         <button
-          className="mt-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-black hover:bg-gray-300 dark:border-white dark:hover:bg-gray-700"
+          className=" flex h-16 w-16 items-center justify-center rounded-full border-2 border-black hover:bg-gray-300 dark:border-white dark:hover:bg-gray-700"
           onClick={startGame}
         >
           <FontAwesomeIcon size="2x" icon={faPlay} />
@@ -32,7 +47,7 @@ const Game = () => {
     return (
       <>
         <p className="text-xl">tap along to the beat</p>
-        <div className="flex flex-row gap-3">
+        <div className="mt-4 flex flex-row gap-3">
           <FontAwesomeIcon size="xl" icon={faComputerMouse} />
           <FontAwesomeIcon size="xl" icon={faKeyboard} />
         </div>
@@ -85,25 +100,34 @@ type MotionFeedbackProps = {
   rotate: number;
   key: number;
 };
-function MotionFeedback({ top, left, rotate, key }: MotionFeedbackProps) {
+
+function MotionFeedback({ top, left, rotate }: MotionFeedbackProps) {
+  const randomIcons = useMemo(() => {
+    return [
+      faVolumeHigh,
+      faVolumeXmark,
+      faHeadphones,
+      faMicrophone,
+      faRecordVinyl,
+      faMusic,
+      faGuitar,
+      faDrum,
+      faMicrophoneLinesSlash,
+      faCirclePlay,
+    ];
+  }, []);
+  const currentIndex = Math.floor(Math.random() * randomIcons.length);
   return (
-    <svg
+    <FontAwesomeIcon
       className={`disappear rotate absolute`}
       style={{
         top: top,
         left: left,
       }}
-      width={100}
-      height={100}
-      key={key}
-    >
-      <rect
-        width={100}
-        height={100}
-        className="fill-black stroke-black dark:fill-white dark:stroke-white"
-        transform={`rotate(${Math.round(rotate)} 50 50 )`}
-      />
-    </svg>
+      size="4x"
+      transform={{ rotate: rotate }}
+      icon={randomIcons[currentIndex]}
+    />
   );
 }
 
@@ -115,7 +139,7 @@ function App() {
       setMotionData({
         left: Math.max(50, Math.random() * window.innerWidth - 150),
         top: Math.max(50, Math.random() * window.innerHeight - 150),
-        rotate: Math.random() * 90,
+        rotate: Math.round(Math.random() * 180) - 90,
         key: Math.random(),
       });
     };
