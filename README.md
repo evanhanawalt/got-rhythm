@@ -9,3 +9,4 @@ npm run dev
 npm run build
 npm run preview
 ```
+code is ugly/ for fun. 
