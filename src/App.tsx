@@ -31,29 +31,35 @@ const Game = () => {
   } else if (count < -12) {
     return (
       <>
-        <p>tap along to the beat</p>
+        <p className="text-xl">tap along to the beat</p>
         <div className="flex flex-row gap-3">
-          <FontAwesomeIcon size="lg" icon={faComputerMouse} />
-          <FontAwesomeIcon size="lg" icon={faKeyboard} />
+          <FontAwesomeIcon size="xl" icon={faComputerMouse} />
+          <FontAwesomeIcon size="xl" icon={faKeyboard} />
         </div>
       </>
     );
   } else if (count < -6) {
     return (
       <>
-        <h1>good, now try it on your own</h1>
+        <p key={"z"} className="text-xl">
+          good, now try it on your own
+        </p>
       </>
     );
   } else if (count < 0) {
     return (
       <>
-        <p key={"a"}>the beat will fade out in... {Math.abs(count)}</p>
+        <p key={"a"} className="text-xl">
+          the beat will fade out in... {Math.abs(count)}
+        </p>
       </>
     );
   } else if (count < 20) {
     return (
       <>
-        <p key={"g"}>Gaming</p>
+        <p key={"g"} className="text-xl">
+          keep going, good luck
+        </p>
       </>
     );
   } else {
