@@ -2,11 +2,22 @@
 
 A clone of https://www.concerthotels.com/got-rhythm
 
-used vite
+I need to re-do the scoring system as my initial approach is not reliable.
+
+built using:
+
+- React
+- Vite
+- Tailwindcss
+
+Run local:
 
 ```
 npm run dev
-npm run build
-npm run preview
 ```
-code is ugly/ for fun. 
+
+Build bundles:
+
+```
+npm run build
+```

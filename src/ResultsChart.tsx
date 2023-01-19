@@ -71,10 +71,10 @@ const ResultsChart = ({ results }: { results: ResultsDisplay }) => {
           0 pts
         </text>
         <text textAnchor="end" x={"100%"} y={"104%"} className="stroke-none">
-          50 pts
+          0 pts
         </text>
         <text textAnchor="middle" x={"50%"} y={"104%"} className="stroke-none">
-          0 pts
+          50 pts
         </text>
       </svg>
     </>
