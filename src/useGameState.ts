@@ -63,7 +63,7 @@ export const useGameState = () => {
           } else {
             const timeSinceLast = value - arr[index - 1];
             const offsetFromExpected = 500 - timeSinceLast;
-            const isEarly = offsetFromExpected < 0;
+            const isEarly = offsetFromExpected > 0;
             const exactDifference = Math.abs(offsetFromExpected);
             const gatedValue = Math.max(0, 200 - exactDifference);
             const points = Math.floor(50 * (gatedValue / 200));
